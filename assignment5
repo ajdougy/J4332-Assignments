@@ -1,0 +1,38 @@
+import urllib2, csv
+#This is saying to import a csv file into this file
+from bs4 import BeautifulSoup
+#this is saying where to import the file from
+
+outfile = open('jaildata.csv', 'w')
+#this is opening the csv file
+writer = csv.writer(outfile)
+#this should be what spits out lists from the CSV file?
+
+
+url = 'https://report.boonecountymo.org/mrcjava/servlet/SH01_MP.I00290s?max_rows=500'
+#the URL of what the program is scraping
+html = urllib2.urlopen(url).read()
+#the HTML reader to read the URL's HTML
+
+soup = BeautifulSoup(html, "html.parser")
+#this is where the URl and HTML is being fed to the BeautifulSoup toolkit
+
+tbody = soup.find('tbody', {'class': 'stripe'})
+#this is telling BeautifulSoup to only extract "class" and "stripe" tables
+
+rows = tbody.find_all('tr')
+#this is telling the scraper to find all rows that contain "class" and "stripe" 
+
+for row in rows:
+
+    cells = row.find_all('td')
+    #this is saying to find cells within all rows
+
+    data = []
+    #this is where data from the scraper will be held
+    for cell in cells:
+        data.append(cell.text.encode('utf-8'))
+        #this is saying to find data within cells
+
+    writer.writerow(data)
+    #this is where lists of rows will be dumped out
